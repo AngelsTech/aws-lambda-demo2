@@ -2,12 +2,11 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Enter the branch to build')
+        string(name: 'GIT_BRANCH', defaultValue: 'main', description: 'Branch to build')
     }
 
     environment {
-        // Repo A URL (Lambda Function)
-        LAMBDA_REPO_URL = 'https://github.com/your-org/lambda-function-repo.git'
+        LAMBDA_REPO_URL = 'https://github.com/AngelsTech/aws-lambda-demo.git'
         LAMBDA_FUNCTION_NAME = 'my-lambda-function'
     }
 
@@ -26,7 +25,7 @@ pipeline {
                     sh '''
                     mkdir -p build
                     pip install -r requirements.txt -t build/
-                    cp *.py build/  # adjust if your Lambda code is in a subfolder
+                    cp *.py build/
                     cd build
                     zip -r ../function.zip .
                     '''
@@ -36,9 +35,9 @@ pipeline {
 
         stage('Deploy to AWS Lambda') {
             steps {
-                withCredentials([[ 
-                    $class: 'AmazonWebServicesCredentialsBinding', 
-                    credentialsId: 'aws-credentials-id' // Replace with your Jenkins credentials ID
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-credentials-id'
                 ]]) {
                     dir('lambda-function') {
                         sh '''
